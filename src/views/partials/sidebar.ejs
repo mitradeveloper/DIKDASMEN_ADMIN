@@ -1,0 +1,39 @@
+<div class="sidebar d-flex flex-column p-3">
+    <div class="container p-3">
+      <h4 class="text-primary fw-bold">ADMIN DIKDASMEN</h4>
+      <p class="fmss fw-normal">admin sakumu</p>
+    </div>   
+    <hr>
+    <h6 class="ms-3">Menu</h6>
+    <ul class="nav nav-pills flex-column mb-auto">
+      <li class="nav-item mx-2">
+        <a href="/"  <% if(page === 'dashboard'){ %>class="nav-link active row"<% } else { %>class="nav-link row"<% } %> >
+          <i class="bi bi-speedometer2 col-1 px-0 ms-2"></i>
+          <span class="fms fw-normal col-9 px-0 ms-2">Dashboard</span>
+        </a>
+      </li>
+
+      <li class="nav-item mx-2">
+        <a href="/list" <% if(page === 'list_sekolah'){ %>class="nav-link active row"<% } else { %>class="nav-link row"<% } %> >
+          <i class="bi bi-list-columns-reverse col-1 px-0 ms-2"></i>          
+          <span class="fms fw-normal col-9 px-0 ms-2">List Sekolah</span>
+        </a>
+      </li>
+
+      <!-- <li class="nav-item mx-2">
+        <a href="/listunsync" <% if(page === 'list_sudah_sinkron'){ %>class="nav-link active row"<% } else { %>class="nav-link row"<% } %> >
+          <i class="bi bi-list-columns-reverse col-1 px-0 ms-2"></i>          
+          <span class="fms fw-normal col-9 px-0 ms-2">sudah tersinkron</span>
+        </a>
+      </li> -->
+        
+      <li class="nav-item mx-2">
+        <a href="/listperiod" <% if(page === 'list_period'){ %>class="nav-link active row"<% } else { %>class="nav-link row"<% } %> >
+          <i class="bi bi-calendar-week-fill col-1 px-0 ms-2"></i>          
+          <span class="fms fw-normal col-9 px-0 ms-2">list Period</span>
+        </a>
+      </li>
+
+    </ul>
+</div>
+    
