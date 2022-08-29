@@ -184,8 +184,8 @@ const getLaporan = async (kodesekolah, callback) => {
         // console.log(kodesekolah);
         axios({
             method:'get',
-            // url:'http://localhost:3123/API/cekLaporan',
-            // url:'http://192.168.151.31:3123/API/cekLaporan',
+            // url:'http://localhost:3333/API/cekLaporan',
+            // url:'http://192.168.151.31:3333/API/cekLaporan',
             url:`http://467a0269edbd.sn.mynetname.net:80/API/laporankas?kodesekolah=${kodesekolah}`,
         }).then(function(response) {
             // console.log(response.data);
@@ -197,8 +197,7 @@ const getLaporan = async (kodesekolah, callback) => {
     }
 }
 
-// CRUD SEKOLAH
-
+// CRUD SEKOLAH => hit API SAKUMU
 const addSekolah = async (id, namasekolah, kodesekolah, kodeaktivasi) => {
     try {
         const token = ''
@@ -217,16 +216,39 @@ const addSekolah = async (id, namasekolah, kodesekolah, kodeaktivasi) => {
     }
 }
 
+const addSekolahAPI = async (id, namasekolah, kodesekolah, kodeaktivasi, token, callback) => {
+    try {
+        // axios post list sekolah baru
+        axios({
+            method:'post',
+            url:`http://localhost:3333/APIaddsekolah`,
+            // url:`http://467a0269edbd.sn.mynetname.net:80/API/addsekolah`,
+            data: {
+                id,
+                namasekolah,
+                kodesekolah,
+                kodeaktivasi,
+                token
+            }
+        }).then(response => {
+            // console.log(response.data)
+            return callback({status:"ok", data: response.data})
+        }).catch(error => console.error(error))
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 const getListAll = async (callback) => {
     try {
         axios({
             method:'get',
-            // url:'http://localhost:3123/APIlist',
-            // url:'http://localhost:3123/API/cekLaporan',
-            // url:'http://192.168.151.31:3123/API/cekLaporan',
+            // url:'http://localhost:3333/APIlist',
+            // url:'http://localhost:3333/API/cekLaporan',
+            // url:'http://192.168.151.31:3333/API/cekLaporan',
             url:'http://467a0269edbd.sn.mynetname.net:80/APIlist',
         }).then(function(response) {
-            // console.log(response.data.data);
+            // console.log(response.data);
             const row = response.data.data
             return callback({row: row})
         })
@@ -239,7 +261,7 @@ const getunsync = async (callback) => {
     try {
         axios({
             method:'get',
-            url:'http://localhost:3123/API/sudahsinkron',
+            url:'http://localhost:3333/API/sudahsinkron',
         }).then(function(response) {
             return callback(response.data);
         })
@@ -279,6 +301,41 @@ const updatesekolah = async (id, namasekolah, kodeaktivasi, callback) => {
     }
 }
 
+const updatesekolahAPI = async (id, namasekolah, kodesekolah, kodeaktivasi, token, callback) => {
+    try {
+        // axios put list sekolah exist
+        axios({
+            method:'post',
+            // url:`http://467a0269edbd.sn.mynetname.net:80/APIeditsekolah/${id}`,
+            url:`http://localhost:3333/APIeditsekolah/${id}`,
+            data: {
+                namasekolah,
+                kodesekolah,
+                kodeaktivasi,
+                token
+            }
+        }).then(response => {
+            // console.log(response.data)
+            return callback({status:'ok', data:response.data})
+        }).catch(error => console.error(error))
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+const delSekolahAPI = async (id) => {
+    try {
+        axios({
+            method:'post',
+            url:`http://localhost:3333/delete?id=${id}`
+        }).then(response => {
+            console.log(response.data)
+        }).catch(error => console.error(error))
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 const delSekolah = async (id) => {
     try {
         let pool = await sql.connect(config.sql);
@@ -296,7 +353,7 @@ const getlistallperiod = async(callback) => {
     try {
         axios({
             method:'get',
-            // url:'http://localhost:3123/API/getlaporanperiod',
+            // url:'http://localhost:3333/API/getlaporanperiod',
             url:'http://467a0269edbd.sn.mynetname.net:80/API/getlaporanperiod',
         }).then(function(response){
             if (response.data.status == 200) {
@@ -337,7 +394,7 @@ const getsekolahbyperiod = async(periode, callback) => {
     try {
         axios({
             method:'get',
-            // url:'http://localhost:3123/API/getsekolahperiod',
+            // url:'http://localhost:3333/API/getsekolahperiod',
             url:'http://467a0269edbd.sn.mynetname.net:80/API/getsekolahperiod',
             data: {
                 periode:periode
@@ -367,7 +424,7 @@ const GetDetailSinkronPeriod = async(appsekolah, periode, callback) => {
     try {
         axios({
             method:'get',
-            // url:'http://localhost:3123/API/getdetailsinkronperiod',
+            // url:'http://localhost:3333/API/getdetailsinkronperiod',
             url:'http://467a0269edbd.sn.mynetname.net:80/API/getdetailsinkronperiod',
             data: {
                 appsekolah:appsekolah,
@@ -390,9 +447,10 @@ const GetListPeriodBySekolah = async(appsekolah, callback) => {
     try {
         axios({
             method:'get',
-            // url:'http://localhost:3123/API/getlistperiodbysekolah',
+            // url:'http://localhost:3333/API/getlistperiodbysekolah',
             url:'http://467a0269edbd.sn.mynetname.net:80/API/getlistperiodbysekolah',
             data: {
+                // namasekolah:namasekolah,
                 appsekolah:appsekolah
             }
         }).then(function(response) {
@@ -434,7 +492,7 @@ const GetDeletePeriodSekolah = async(appsekolah, periode, callback) =>{
     try {
         axios({
             method:'get',
-            // url:'http://localhost:3123/API/getdelperiodsinkron',
+            // url:'http://localhost:3333/API/getdelperiodsinkron',
             url:'http://467a0269edbd.sn.mynetname.net:80/API/getdelperiodsinkron',
             data:{
                 appsekolah:appsekolah,
@@ -456,16 +514,19 @@ module.exports = {
     cekSekolah,
     addlaporan,
     addSekolah,
+    addSekolahAPI,
     updatesekolah,
+    updatesekolahAPI,
     getLaporan,
     cekLaporan,
     cekSinkron,
     delSekolah,
+    delSekolahAPI,
     getUpdateSekolah,
     getunsync,
     getlistallperiod,
     getsekolahbyperiod,
     GetDetailSinkronPeriod,
     GetListPeriodBySekolah,
-    GetDeletePeriodSekolah
+    GetDeletePeriodSekolah,
 }

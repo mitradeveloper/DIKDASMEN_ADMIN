@@ -1,7 +1,9 @@
 <div class="container-fluid p-0">
     <div class="row">
         <div class="col">
-            <h5><%= title%></h5>
+            <h5><%= title %></h5>
+            <h3><%= appsekolah %> </h3>
+            <a href="/list" class="btn badge bg-danger fw-normal"><i class="bi bi-arrow-left-circle-fill"></i> Kembali</a>
         </div>
         <div class="col-sm text-end me-3">
             <form action="#" method="post">
@@ -16,21 +18,23 @@
     <table class="table table-sm table-bordered table-striped mt-3">
         <thead>
             <tr>
-                <th class="text-center" scope="col" style="width: 10%;">No</th>
-                <th class="text-center" scope="col" style="width: 50%;">Periode</th>
-                <th class="text-center" scope="col" style="width: 18%;">Aksi</th>
+                <th class="text-center" scope="col" style="width: 5%;">No</th>
+                <!-- <th class="text-center" scope="col" style="width: 25%;">Nama Sekolah</th> -->
+                <th class="text-center" scope="col" style="width: 20%;">Periode</th>
+                <!-- <th class="text-center" scope="col" style="width: 16%;">Real Periode</th> -->
+                <th class="text-center" scope="col" style="width: 12%;">Aksi</th>
             </tr>
         </thead>
         <tbody>
             <% for (let i = 0; i < data.length; i++) { %> 
                 <tr>
                     <th class="text-center" scope="row"><%= no++ %></th>
+                    <!-- <td class="text-center" scope="row"><%= data[i].appsekolah %></td> -->
                     <td class="text-center" scope="row"><%= data[i].periode %></td>
-                    <td class="text-center" style="display:none" scope="row"><%= data[i].appsekolah %></td>
-                    <td class="text-center" style="display:none" scope="row"><%= data[i].realperiode %></td>
+                    <!-- <td class="text-center" scope="row"><%= data[i].realperiode %></td> -->
                     <td class="text-center" scope="row">
                         <a href="/detailperiodesinkron?appsekolah=<%= btoa(data[i].appsekolah) %>&periode=<%= btoa(data[i].realperiode) %> " class="btn badge btn-success fw-normal"><i class="bi bi-eye-fill"></i> Detail Keuangan </a>
-                        <a href="/delperiodesekolah?appsekolah=<%= btoa(data[i].appsekolah) %>&periode=<%= btoa(data[i].realperiode) %> " class="btn badge btn-danger fw-normal"><i class="bi bi-trash-fill"></i> Hapus </a>
+                        <!-- <a href="/delperiodesekolah?appsekolah=<%= btoa(data[i].appsekolah) %>&periode=<%= btoa(data[i].realperiode) %> " class="btn badge btn-danger fw-normal"><i class="bi bi-trash-fill"></i> Hapus </a> -->
                     </td>
                 </tr>
             <% } %>

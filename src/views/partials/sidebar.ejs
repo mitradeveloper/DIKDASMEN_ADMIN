@@ -1,6 +1,6 @@
 <div class="sidebar d-flex flex-column p-3">
     <div class="container p-3">
-      <h4 class="text-primary fw-bold">ADMIN DIKDASMEN</h4>
+      <h4 class="text-primary fw-bold">ADMIN DIKDASMEN <br> PONOROGO</h4>
       <p class="fmss fw-normal">admin sakumu</p>
     </div>   
     <hr>
@@ -27,10 +27,24 @@
         </a>
       </li> -->
         
-      <li class="nav-item mx-2">
-        <a href="/listperiod" <% if(page === 'list_period'){ %>class="nav-link active row"<% } else { %>class="nav-link row"<% } %> >
+      <!-- <li class="nav-item mx-2">
+        <a href="/listperiod" <% if(page === 'list_periode'){ %>class="nav-link active row"<% } else { %>class="nav-link row"<% } %> >
           <i class="bi bi-calendar-week-fill col-1 px-0 ms-2"></i>          
           <span class="fms fw-normal col-9 px-0 ms-2">list Period</span>
+        </a>
+      </li> -->
+
+      <li class="nav-item mx-2">
+        <a href="/akun" <% if(page === 'akun'){ %>class="nav-link active row"<% } else { %>class="nav-link row"<% } %> >
+          <i class="bi bi-person col-1 px-0 ms-2"></i>          
+          <span class="fms fw-normal col-9 px-0 ms-2">Akun</span>
+        </a>
+      </li>
+
+      <li class="nav-item mx-2">
+        <a href="/logout" class="nav-link row" >
+          <i class="bi bi-box-arrow-right col-1 px-0 ms-2"></i>          
+          <span class="fms fw-normal col-9 px-0 ms-2">Keluar</span>
         </a>
       </li>
 

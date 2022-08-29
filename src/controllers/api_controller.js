@@ -1,7 +1,18 @@
 'use strict';
-const data_aktivasi = require('../data/aktivasi');
 const rupiah = require('rupiah-format');
+
+const data_aktivasi = require('../data/aktivasi');
 // const eventData = require('../data/aktivasi')
+
+const postLoginAPI = async (req, res) => {
+    try {
+        const {username, password} = req.body
+
+        res.send
+    } catch (error) {
+        console.error(error);
+    }
+}
 
 const getListSekolah = async (req, res, next) => {
     try {
@@ -141,6 +152,7 @@ const getLaporankas = async (req, res, next) => {
 }
 
 module.exports = {
+    postLoginAPI,
     getListSekolah,
     addlistsekolah,
     editsekolah,

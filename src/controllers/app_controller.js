@@ -1,19 +1,102 @@
 'use strict';
+const rupiah = require('rupiah-format');
+// const crypto = require('crypto')
+
 const data_aktivasi = require('../data/aktivasi');
 const eventData = require('../data/aktivasi');
-const rupiah = require('rupiah-format');
+const { loginAPI, resetAkunUser } = require('../data/users');
 
 //GET
 const get_login = async (req, res) => {
-    res.render('./pages/login', {
-        title: 'Login',
-        layout: 'login_layout'
-    });
+    if (req.cookies.user) {
+        // redirect halaman dashboard
+        res.redirect('/')
+    } else {
+        res.render('./pages/login', {
+            title: 'Login',
+            layout: 'login_layout',
+            // error alert untuk user dan password tidak cocok
+            err400: req.flash('err400'),
+            // error alert untuk user tidak ada
+            err404: req.flash('err404'),
+        });
+    }
+}
+
+const logout = (req, res) => {
+    // membersihkan cookie dan redirect halaman
+    res.clearCookie('user', {path:'/'}).redirect('/login')
 }
 
 //POST
 const post_login = async (req, res) => {
+    const {username, password} = req.body
 
+    await loginAPI(username, password, function (data) {
+        // console.log(data.data.status)
+        if (data.status == 'ok') {
+            res.cookie('user', data.data.user)
+                .status(201)
+                .redirect('/')
+        } else if (data.status == 'no') {
+            req.flash('err400', 'Username dan Password yang diinputkan tidak cocok')
+            res.status(400).redirect('/login')
+        } else if (data.status == 'not found') {
+            req.flash('err404','User tidak ada')
+            res.status(404).redirect('/login')
+        }
+    })
+
+    // if (result.recordset[0]) {
+    //     if (result.recordset[0].username === username && result.recordset[0].password === password) {
+    //         const token = jwt.sign({username: username}, process.env.SECRET_KEY || 'secrettest', {expiresIn: '1h'})
+
+    //         res.cookie('user',crypto.createHmac('sha256',token)).status(201).redirect('/')
+    //         req.session.cookie.expires = new Date(Date.now() + 1000)
+    //     } else {
+    //         // username dan password yang diinputkan tidak cocok
+    //         req.flash('err400', 'Username dan Password yang diinputkan tidak cocok')
+    //         res.status(400).redirect('/login')
+    //     }
+    // } else {
+    //     // user tidak ada
+    //     req.flash('err404','User tidak ada')
+    //     res.status(404).redirect('/login')
+    // }
+}
+
+const getAkun = async (req, res) => {
+    try {
+        if (req.cookies.user) {
+            res.render('./pages/akun', {
+                title: 'Akun',
+                layout: 'main_layout',
+                page: 'akun',
+                succReset: req.flash('succReset')
+            })
+        } else {
+            res.redirect('/login')
+        }
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+const resetAkun = async (req, res) => {
+    try {
+        const { username, password } = req.body
+
+        await resetAkunUser(username, password, function(data) {
+            // console.log(data)
+
+            if (data.status == 'ok') {
+                req.flash('succReset', 'Reset Akun Sukses')
+                res.redirect('/akun')
+            } 
+        })
+    } catch (error) {
+        console.error(error);
+    }
 }
 
 //API
@@ -60,11 +143,25 @@ const post_laporan = async (req, res, next) => {
 }
 
 const getDashboard = async (req, res) => {
-    res.render('./pages/dashboard', {
-        title: 'Dashboard',
-        layout: 'main_layout',
-        page: 'dashboard'
-    });
+    try {
+        if (req.cookies.user) {
+            await data_aktivasi.getListAll(function (dataAll) {
+                data_aktivasi.getlistallperiod(function (dataPeriod) {
+                    res.render('./pages/dashboard', {
+                        title: 'Dashboard',
+                        layout: 'main_layout',
+                        page: 'dashboard',
+                        totalSekolah: dataAll.row.length,
+                        totalPeriod: dataPeriod.length
+                    });
+                })
+            })
+        } else {
+            res.redirect('/login')
+        }
+    } catch (error) {
+        console.error(error);
+    }
 }
 
 const getRegisterSekolah = async (req, res) => {
@@ -77,30 +174,48 @@ const getRegisterSekolah = async (req, res) => {
 
 const getListSekolah = async (req, res, next) => {
     try {
-        await data_aktivasi.getListAll(function (data) {
-            // console.log(data);
-            let listdata = [];
-            for (let i = 0; i < data.row.length; i++) {
-                listdata.push({
-                    id: data.row[i].id,
-                    namasekolah: data.row[i].namasekolah,
-                    kodesekolah: data.row[i].kodesekolah,
-                    kodeaktivasi: data.row[i].kodeaktivasi,
-                    token: data.row[i].token
-                })
-            }
-            // console.log(listdata);
-            res.render('./pages/list_sekolah', {
-            title: 'List Sekolah',
-            layout: 'main_layout',
-            page: 'list_sekolah',
-            data: listdata,
-            no: 1,
-            succ: req.flash('success'),
-            exist: req.flash('dataexist'),
-            del: req.flash(`del`)
-            });
-        })
+        if (req.cookies.user) {
+            await data_aktivasi.getListAll(function (data) {
+                // console.log(data);
+                let listdata = [];
+                for (let i = 0; i < data.row.length; i++) {
+                    const dataPeriodResult = data_aktivasi.GetListPeriodBySekolah(data.row[i].namasekolah, function(dataPeriod) {
+                        // console.log(dataPeriod)
+                        // console.log(dataPeriod.length)
+                        // return dataPeriod
+                        // if (dataPeriod.length == 0) {
+                        //     console.log('belum sinkron')
+                        // } else {
+                        //     console.log('sudah sinkron')
+                        // }
+                    })
+
+                    listdata.push({
+                        id: data.row[i].id,
+                        namasekolah: data.row[i].namasekolah,
+                        kodesekolah: data.row[i].kodesekolah,
+                        // kodeaktivasi: data.row[i].kodeaktivasi,
+                        // token: data.row[i].token
+                        // dataPeriodResult: dataPeriodResult.length
+                    })
+                }
+
+                // console.log(listdata);
+                res.render('./pages/list_sekolah', {
+                title: 'List Sekolah',
+                layout: 'main_layout',
+                page: 'list_sekolah',
+                data: listdata,
+                no: 1,
+                succ: req.flash('success'),
+                updatesucc: req.flash('updatesucc'),
+                exist: req.flash('dataexist'),
+                del: req.flash(`del`)
+                });
+            })
+        } else {
+            res.redirect('/login')
+        }
     } catch (error) {
         console.log(error);
     }
@@ -174,6 +289,7 @@ const apiSekolahID = async (req, res, next) => {
     }
 }
 
+// ADD SQL SERVER
 const addlistsekolah = async (req, res, next) => {
     const id = req.body.inpIdSekolah
     const namasekolah = req.body.inpNamaSekolah
@@ -196,6 +312,24 @@ const addlistsekolah = async (req, res, next) => {
         }
     })
     //kodisi jika ada kembalikan fungsi jika tidak masukkan data
+}
+
+// ADD POST API
+const addlistsekolahAPI = async (req, res) => {
+    const {id, namasekolah, kodesekolah, kodeaktivasi, token} = req.body;
+    
+    // await call function addSekolahAPI dari aktivasi.js
+    await data_aktivasi.addSekolahAPI(id, namasekolah, kodesekolah, kodeaktivasi, token, function(data) {
+        // console.log(data)
+        if (data.status == "ok") {
+            // console.log('data sudah ada');
+            req.flash(`success`, `data ${namasekolah} berhasil dimasukkan`);
+            res.redirect('/list')
+        } else {
+            req.flash(`dataexist`, `data sudah ada silahkan teliti kembali`)
+            res.redirect('/list')
+        }
+    })
 }
 
 const getEditsekolah = async (req,res,next) => {
@@ -228,6 +362,24 @@ const editsekolah = async (req, res, next) => {
         res.send({status:'ok', msg:`gagal mengganti data`})
     }
     next()
+}
+
+// HIT API SAKUMU PUT
+const editsekolahAPI = async (req, res) => {
+    const {id} = req.params
+    const {namasekolah, kodesekolah, kodeaktivasi, token} = req.body
+
+    // await call function updateSekolahAPI dari aktivasi.js
+    await data_aktivasi.updatesekolahAPI(id, namasekolah, kodesekolah, kodeaktivasi, token, function(data) {
+        // console.log(data)
+        if (data.status == "ok") {
+            req.flash('updatesucc', `data ${namasekolah} berhasil diupdate`)
+            res.redirect(`/list`)
+        } else {
+            req.flash(`dataexist`, `data sudah ada silahkan teliti kembali`)
+            res.redirect('/list')
+        }
+    })
 }
 
 const getLaporankas = async (req, res, next) => {
@@ -286,7 +438,7 @@ const getLaporankas = async (req, res, next) => {
 const getDelete = async (req, res, next) => {
     try {
         const id = req.query.id
-        await data_aktivasi.delSekolah(id)
+        await data_aktivasi.delSekolahAPI(id)
         req.flash(`del`, `data telah terhapus`)
         res.redirect(`/list`)
     } catch (error) {
@@ -297,35 +449,43 @@ const getDelete = async (req, res, next) => {
 // menu list period
 const getlistperiod = async (req, res, next) => {
     try {
-        await data_aktivasi.getlistallperiod(function(data) {
-            res.render('./pages/list_period', {
-                title: 'List Period',
-                layout: 'main_layout',
-                page: 'list_periode',
-                data: data,
-                no: 1
+        if (req.cookies.user) {
+            await data_aktivasi.getlistallperiod(function(data) {
+                res.render('./pages/list_period', {
+                    title: 'List Period',
+                    layout: 'main_layout',
+                    page: 'list_periode',
+                    data: data,
+                    no: 1
+                })
             })
-        })
+        } else {
+            res.redirect('/login')
+        }
     } catch (error) {
         console.log(error);
     }
 }
 
 const getlistsekolahbyperiod = async(req, res, next) => {
-    const periode = atob(req.query.periode)
-    await data_aktivasi.getsekolahbyperiod(periode, function(data) {
-        try {
-            res.render('./pages/list_sekolah_by_period',{
-                title: 'List Sekolah By Period',
-                layout: 'main_layout',
-                page: 'list_sekolah_by_period',
-                data:data,
-                no: 1
-            })
-        } catch (error) {
-            console.log(error);
-        }
-    })
+    if (req.cookies.user) {
+        const periode = atob(req.query.periode)
+        await data_aktivasi.getsekolahbyperiod(periode, function(data) {
+            try {
+                res.render('./pages/list_sekolah_by_period',{
+                    title: 'List Sekolah By Period',
+                    layout: 'main_layout',
+                    page: 'list_sekolah_by_period',
+                    data:data,
+                    no: 1
+                })
+            } catch (error) {
+                console.log(error);
+            }
+        })
+    } else {
+        res.redirect('/login')
+    }
 }
 
 const getperiodesinkron = async(req, res, next) => {
@@ -360,7 +520,15 @@ const getperiodesinkron = async(req, res, next) => {
         }
         // console.log(totalout);
         const totalAll = totalIn - totalout
-    try {
+        try {
+            const date1 = periode.substring(6,8)
+            const month1 = periode.substring(4,6)
+            const year1 = periode.substring(0,4)
+            const date2 = periode.substring(15,17)
+            const month2 = periode.substring(13,15)
+            const year2 = periode.substring(9,13)
+            const swappedPeriod1 = `${date1}/${month1}/${year1}`
+            const swappedPeriod2 = `${date2}/${month2}/${year2}`
             res.render('./pages/detail_sinkron_period', {
                 title: 'Detail periode sinkron',
                 layout: 'main_layout',
@@ -369,7 +537,9 @@ const getperiodesinkron = async(req, res, next) => {
                 pengeluaran: data.pengeluaran,
                 total_penerimaan: rupiah.convert(totalIn),
                 total_pengeluaran: rupiah.convert(totalout),
-                totalAll:rupiah.convert(totalAll) 
+                totalAll:rupiah.convert(totalAll),
+                appsekolah,
+                periode: `${swappedPeriod1} - ${swappedPeriod2}`
             })
         } catch (error) {
             console.log(error);
@@ -378,20 +548,29 @@ const getperiodesinkron = async(req, res, next) => {
 }
 
 const getperiodbysekolah = async(req, res, next) => {
-    const appsekolah = atob(req.query.appsekolah)
-    await data_aktivasi.GetListPeriodBySekolah(appsekolah, function(data) {
-        try {
-            res.render(`./pages/list_period_by_sekolah`, {
-                title: 'List periode sekolah',
-                layout: 'main_layout',
-                page: 'list_periode_sinkron',
-                data: data,
-                no: 1
-            })
-        } catch (error) {
-            console.log(error);
-        }
-    })
+    if (req.cookies.user) {
+        // const namasekolah = req.query.namasekolah
+        const appsekolah = atob(req.query.appsekolah)
+        await data_aktivasi.GetListPeriodBySekolah(appsekolah, function(data) {
+            // console.log(data)
+            // console.log(data.length)
+            try {
+                res.render(`./pages/list_period_by_sekolah`, {
+                    title: `List periode sekolah`,
+                    layout: 'main_layout',
+                    page: 'list_periode_sinkron',
+                    data: data,
+                    // namasekolah,
+                    appsekolah,
+                    no: 1
+                })
+            } catch (error) {
+                console.log(error);
+            }
+        })
+    } else {
+        res.redirect('/login')
+    }
 }
 
 const delperiodbysekolah = async(req, res, next) =>{
@@ -409,7 +588,10 @@ const delperiodbysekolah = async(req, res, next) =>{
 }
 module.exports = {
     get_login,
+    logout,
     post_login,
+    getAkun,
+    resetAkun,
     post_aktivasi,
     getDashboard,
     getRegisterSekolah,
@@ -420,10 +602,12 @@ module.exports = {
     apiSekolahID,
     post_cektoken,
     addlistsekolah,
+    addlistsekolahAPI,
     getListLaporan,
     post_laporan,
     getLaporankas,
     editsekolah,
+    editsekolahAPI,
     getEditsekolah,
     getDelete,
     getunsync,
