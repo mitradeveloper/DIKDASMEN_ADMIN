@@ -179,7 +179,7 @@ const getListSekolah = async (req, res, next) => {
                 // console.log(data);
                 let listdata = [];
                 for (let i = 0; i < data.row.length; i++) {
-                    const dataPeriodResult = data_aktivasi.GetListPeriodBySekolah(data.row[i].namasekolah, function(dataPeriod) {
+                    // const dataPeriodResult = data_aktivasi.GetListPeriodBySekolah(data.row[i].namasekolah, function(dataPeriod) {
                         // console.log(dataPeriod)
                         // console.log(dataPeriod.length)
                         // return dataPeriod
@@ -188,7 +188,7 @@ const getListSekolah = async (req, res, next) => {
                         // } else {
                         //     console.log('sudah sinkron')
                         // }
-                    })
+                    // })
 
                     listdata.push({
                         id: data.row[i].id,

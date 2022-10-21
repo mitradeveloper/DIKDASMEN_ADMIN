@@ -5,6 +5,7 @@ const utils = require('./utils');
 const config = require('../../config');
 const sql = require('mssql');
 const axios = require('axios');
+const { URL } = require('../api');
 
 
 const submit = async (kodesekolah, kodeaktivasi, kodereq) => {
@@ -186,7 +187,8 @@ const getLaporan = async (kodesekolah, callback) => {
             method:'get',
             // url:'http://localhost:3333/API/cekLaporan',
             // url:'http://192.168.151.31:3333/API/cekLaporan',
-            url:`http://467a0269edbd.sn.mynetname.net:80/API/laporankas?kodesekolah=${kodesekolah}`,
+            // url:`http://467a0269edbd.sn.mynetname.net:80/API/laporankas?kodesekolah=${kodesekolah}`,
+            url:`${URL}/API/laporankas?kodesekolah=${kodesekolah}`,
         }).then(function(response) {
             // console.log(response.data);
             const row = response.data
@@ -246,7 +248,8 @@ const getListAll = async (callback) => {
             // url:'http://localhost:3333/APIlist',
             // url:'http://localhost:3333/API/cekLaporan',
             // url:'http://192.168.151.31:3333/API/cekLaporan',
-            url:'http://467a0269edbd.sn.mynetname.net:80/APIlist',
+            // url:'http://467a0269edbd.sn.mynetname.net:80/APIlist',
+            url:`${URL}/APIlist`,
         }).then(function(response) {
             // console.log(response.data);
             const row = response.data.data
@@ -354,7 +357,8 @@ const getlistallperiod = async(callback) => {
         axios({
             method:'get',
             // url:'http://localhost:3333/API/getlaporanperiod',
-            url:'http://467a0269edbd.sn.mynetname.net:80/API/getlaporanperiod',
+            // url:'http://467a0269edbd.sn.mynetname.net:80/API/getlaporanperiod',
+            url:`${URL}/API/getlaporanperiod`,
         }).then(function(response){
             if (response.data.status == 200) {
                 // console.log(response.data.data.row[0].periode);
@@ -395,7 +399,8 @@ const getsekolahbyperiod = async(periode, callback) => {
         axios({
             method:'get',
             // url:'http://localhost:3333/API/getsekolahperiod',
-            url:'http://467a0269edbd.sn.mynetname.net:80/API/getsekolahperiod',
+            // url:'http://467a0269edbd.sn.mynetname.net:80/API/getsekolahperiod',
+            url:`${URL}/API/getsekolahperiod`,
             data: {
                 periode:periode
             }
@@ -425,7 +430,8 @@ const GetDetailSinkronPeriod = async(appsekolah, periode, callback) => {
         axios({
             method:'get',
             // url:'http://localhost:3333/API/getdetailsinkronperiod',
-            url:'http://467a0269edbd.sn.mynetname.net:80/API/getdetailsinkronperiod',
+            // url:'http://467a0269edbd.sn.mynetname.net:80/API/getdetailsinkronperiod',
+            url:`${URL}/API/getdetailsinkronperiod`,
             data: {
                 appsekolah:appsekolah,
                 periode:periode
@@ -448,7 +454,8 @@ const GetListPeriodBySekolah = async(appsekolah, callback) => {
         axios({
             method:'get',
             // url:'http://localhost:3333/API/getlistperiodbysekolah',
-            url:'http://467a0269edbd.sn.mynetname.net:80/API/getlistperiodbysekolah',
+            // url:'http://467a0269edbd.sn.mynetname.net:80/API/getlistperiodbysekolah',
+            url:`${URL}/API/getlistperiodbysekolah`,
             data: {
                 // namasekolah:namasekolah,
                 appsekolah:appsekolah
@@ -493,7 +500,8 @@ const GetDeletePeriodSekolah = async(appsekolah, periode, callback) =>{
         axios({
             method:'get',
             // url:'http://localhost:3333/API/getdelperiodsinkron',
-            url:'http://467a0269edbd.sn.mynetname.net:80/API/getdelperiodsinkron',
+            // url:'http://467a0269edbd.sn.mynetname.net:80/API/getdelperiodsinkron',
+            url:`${URL}/API/getdelperiodsinkron`,
             data:{
                 appsekolah:appsekolah,
                 periode:periode

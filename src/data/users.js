@@ -3,6 +3,7 @@ const axios = require('axios')
 
 const utils = require('./utils');
 const config = require('../../config');
+const { URL } = require('../api');
 
 const login = async (username, password) => {
     // console.log(username, password);
@@ -24,7 +25,8 @@ const loginAPI = async (username, password, callback) => {
     try {
         axios({
             method:'POST',
-            url:'http://467a0269edbd.sn.mynetname.net:80/API/login',
+            // url:'http://467a0269edbd.sn.mynetname.net:80/API/login',
+            url:`${URL}/API/login`,
             // url:'http://localhost:3333/API/login',
             data: {
                 username, password
@@ -52,7 +54,8 @@ const resetAkunUser = (username, password, callback) => {
         axios({
             method:'POST',
             // url:'http://localhost:3333/API/resetakun',
-            url:'http://467a0269edbd.sn.mynetname.net:80/API/resetakun',
+            // url:'http://467a0269edbd.sn.mynetname.net:80/API/resetakun',
+            url:`${URL}/API/resetakun`,
             data: {
                 username, password
             }
