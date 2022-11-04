@@ -1,3 +1,4 @@
 module.exports = {
-    URL: 'https://8ad6-180-248-8-151.ap.ngrok.io'
+    // URL: 'https://acc3-36-93-241-51.ap.ngrok.io',
+    URL: 'http://36.93.241.51:3301'
 }
