@@ -99,6 +99,25 @@ const resetAkun = async (req, res) => {
     }
 }
 
+const getBantuan = async (req, res) => {
+    try {
+        if (req.cookies.user) {
+            res.render('./pages/bantuan', {
+                title: 'Bantuan',
+                layout: 'main_layout',
+                page: 'bantuan',
+            })
+        } else {
+            res.redirect('/login')
+        }
+    } catch (error) {
+        res.status(500).json({
+            status:500,
+            msg:error.message
+        })
+    }
+}
+
 //API
 const post_aktivasi = async (req, res) => {
     try {
@@ -592,6 +611,7 @@ module.exports = {
     post_login,
     getAkun,
     resetAkun,
+    getBantuan,
     post_aktivasi,
     getDashboard,
     getRegisterSekolah,
