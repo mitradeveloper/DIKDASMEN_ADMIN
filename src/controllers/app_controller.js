@@ -4,7 +4,7 @@ const rupiah = require('rupiah-format');
 
 const data_aktivasi = require('../data/aktivasi');
 const eventData = require('../data/aktivasi');
-const { loginAPI, resetAkunUser } = require('../data/users');
+const { loginAPI, /* resetAkunUser */ } = require('../data/users');
 
 //GET
 const get_login = async (req, res) => {
@@ -65,39 +65,39 @@ const post_login = async (req, res) => {
     // }
 }
 
-const getAkun = async (req, res) => {
-    try {
-        if (req.cookies.user) {
-            res.render('./pages/akun', {
-                title: 'Akun',
-                layout: 'main_layout',
-                page: 'akun',
-                succReset: req.flash('succReset')
-            })
-        } else {
-            res.redirect('/login')
-        }
-    } catch (error) {
-        console.error(error);
-    }
-}
+// const getAkun = async (req, res) => {
+//     try {
+//         if (req.cookies.user) {
+//             res.render('./pages/akun', {
+//                 title: 'Akun',
+//                 layout: 'main_layout',
+//                 page: 'akun',
+//                 succReset: req.flash('succReset')
+//             })
+//         } else {
+//             res.redirect('/login')
+//         }
+//     } catch (error) {
+//         console.error(error);
+//     }
+// }
 
-const resetAkun = async (req, res) => {
-    try {
-        const { username, password } = req.body
+// const resetAkun = async (req, res) => {
+//     try {
+//         const { username, password } = req.body
 
-        await resetAkunUser(username, password, function(data) {
-            // console.log(data)
+//         await resetAkunUser(username, password, function(data) {
+//             // console.log(data)
 
-            if (data.status == 'ok') {
-                req.flash('succReset', 'Reset Akun Sukses')
-                res.redirect('/akun')
-            } 
-        })
-    } catch (error) {
-        console.error(error);
-    }
-}
+//             if (data.status == 'ok') {
+//                 req.flash('succReset', 'Reset Akun Sukses')
+//                 res.redirect('/akun')
+//             } 
+//         })
+//     } catch (error) {
+//         console.error(error);
+//     }
+// }
 
 const getBantuan = async (req, res) => {
     try {
@@ -609,8 +609,8 @@ module.exports = {
     get_login,
     logout,
     post_login,
-    getAkun,
-    resetAkun,
+    // getAkun,
+    // resetAkun,
     getBantuan,
     post_aktivasi,
     getDashboard,

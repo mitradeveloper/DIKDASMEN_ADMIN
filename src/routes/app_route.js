@@ -9,8 +9,8 @@ router.get('/login', controllers.get_login);
 router.get('/logout', controllers.logout);
 router.get('/', controllers.getDashboard);
 router.get('/register', controllers.getRegisterSekolah);
-router.get('/akun', controllers.getAkun);
-router.post('/akun', controllers.resetAkun);
+// router.get('/akun', controllers.getAkun);
+// router.post('/akun', controllers.resetAkun);
 router.get('/bantuan', controllers.getBantuan);
 
 router.get('/list', controllers.getListSekolah);

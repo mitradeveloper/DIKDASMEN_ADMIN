@@ -29,7 +29,7 @@
                     <td class="text-center" scope="row"><%= data[i].namaSekolah %></td>
                     <td class="text-center" scope="row"><%= data[i].kodesekolah %></td>
                     <td class="text-center" scope="row">
-                        <a href="/laporankas?kodesekolah=" class="btn badge btn-success fw-normal"><i class="bi bi-eye-fill"></i> lihat keuangan </a>
+                        <a href="/laporankas?kodesekolah=<%= btoa(data[i].kodesekolah) %> " class="btn badge btn-success fw-normal"><i class="bi bi-eye-fill"></i> lihat keuangan </a>
                     </td>
                 </tr>
             <% } %>

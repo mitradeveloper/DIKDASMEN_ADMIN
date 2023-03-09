@@ -264,7 +264,7 @@ const getunsync = async (callback) => {
     try {
         axios({
             method:'get',
-            url:'http://localhost:3333/API/sudahsinkron',
+            url:`${URL}/API/sudahsinkron`,
         }).then(function(response) {
             return callback(response.data);
         })

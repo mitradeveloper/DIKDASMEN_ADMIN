@@ -49,26 +49,26 @@ const loginAPI = async (username, password, callback) => {
     }
 }
 
-const resetAkunUser = (username, password, callback) => {
-    try {
-        axios({
-            method:'POST',
-            // url:'http://localhost:3333/API/resetakun',
-            // url:'http://467a0269edbd.sn.mynetname.net:80/API/resetakun',
-            url:`${URL}/API/resetakun`,
-            data: {
-                username, password
-            }
-        }).then(response => {
-            return callback({ status: 'ok', data: response.data })
-        }).catch(error => console.error('RESET AKUN ERROR', error))
-    } catch (error) {
-        console.error(error);
-    }
-}
+// const resetAkunUser = (username, password, callback) => {
+//     try {
+//         axios({
+//             method:'POST',
+//             // url:'http://localhost:3333/API/resetakun',
+//             // url:'http://467a0269edbd.sn.mynetname.net:80/API/resetakun',
+//             url:`${URL}/API/resetakun`,
+//             data: {
+//                 username, password
+//             }
+//         }).then(response => {
+//             return callback({ status: 'ok', data: response.data })
+//         }).catch(error => console.error('RESET AKUN ERROR', error))
+//     } catch (error) {
+//         console.error(error);
+//     }
+// }
 
 module.exports = {
     login,
     loginAPI,
-    resetAkunUser
+    // resetAkunUser
 }
